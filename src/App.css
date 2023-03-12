@@ -131,11 +131,20 @@ input[type=checkbox] {
   padding-left: 16px;
   border-bottom: 1px solid #e5e5e5;
 }
-.todolist__table .todolist__item li a {
+.todolist__table .todolist__item li button {
   margin-left: auto;
   margin-right: 18px;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
 }
-.todolist__table .todolist__item input:checked + span {
+.todolist__table .todolist__item li button svg {
+  width: 20px;
+  height: 20px;
+  color: red;
+  cursor: pointer;
+}
+.todolist__table .todolist__item input:checked + label {
   text-decoration: line-through;
   color: #e5e5e5;
 }
@@ -154,4 +163,5 @@ input[type=checkbox] {
 .todolist__info span:last-child {
   color: #9F9A91;
 }
+
 /*# sourceMappingURL=index.css.map */
