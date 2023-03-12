@@ -5,6 +5,11 @@ body {
   height: 100%;
 }
 
+.container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
 .bg-half {
   width: 100%;
   height: 100vh;
@@ -131,22 +136,28 @@ input[type=checkbox] {
   padding-left: 16px;
   border-bottom: 1px solid #e5e5e5;
 }
-.todolist__table .todolist__item li button {
+/* .todolist__table .todolist__item li button { */
+.todolist__table .todolist__item li .todolist__btn {
   margin-left: auto;
   margin-right: 18px;
   padding: 6px 12px;
+}
+
+.todolist__table .todolist__item .todolist__btn button {
   background: transparent;
   border: none;
 }
-.todolist__table .todolist__item li button svg {
+
+.todolist__table .todolist__item li .todolist__btn svg {
   width: 20px;
   height: 20px;
   color: red;
   cursor: pointer;
 }
+
 .todolist__table .todolist__item input:checked + label {
   text-decoration: line-through;
-  color: #e5e5e5;
+  color: skyblue;
 }
 .todolist__info {
   height: 88px;
@@ -162,6 +173,21 @@ input[type=checkbox] {
 }
 .todolist__info span:last-child {
   color: #9F9A91;
+}
+
+.add-todo-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: absolute;
+  right: 1rem;
+  top: 20px;
+}
+
+.add-todo-btn svg {
+  width: 25px;
+  height: 25px;
 }
 
 /*# sourceMappingURL=index.css.map */

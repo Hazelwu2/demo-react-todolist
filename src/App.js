@@ -1,22 +1,28 @@
 import './App.css';
 import axios from 'axios'
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { BiMessageSquareAdd } from 'react-icons/bi';
-import { MdDeleteOutline } from 'react-icons/md';
+import { MdDeleteOutline, MdEdit } from 'react-icons/md';
 
 
 function App() {
   const [input, setInput] = useState('')
+  const [tab, setTab] = useState('all')
   const [todos, setTodos] = useState([
-    { id: 0, title: '爆肝趕 KryptoCamp 作業', status: false },
-    { id: 1, title: '觀看 KryptoCamp 線上課程', status: false },
-    { id: 2, title: '學習 Solidity 合約', status: false },
+    { id: 0, title: '爆肝趕 KryptoCamp 作業', completed: false },
+    { id: 1, title: '觀看 KryptoCamp 線上課程', completed: false },
+    { id: 2, title: '學習 Solidity 合約', completed: false },
   ])
   const [completedTodo, setCompletedTodo] = useState(0)
+  const [filteredTodos, setFilteredTodos] = useState(0)
 
-  const test = () => { }
   const addTodo = (text) => {
-    setTodos([...todos, { title: text }])
+    setTodos([...todos, {
+      id: 0,
+      title: text,
+      completed: false
+    }])
+    saveTodosInStorage()
     setInput('')
     alert('新增成功')
   }
@@ -25,27 +31,71 @@ function App() {
     setTodos(todos.filter(todo => todo.id !== id))
   }
 
+
   const makeCompletedTodo = (id) => {
     // 深複製
     const newTodos = [...todos];
-    newTodos[id].status = !newTodos[id].status
+    newTodos[id].completed = !newTodos[id].completed
     setTodos(newTodos)
-
-    console.log(newTodos[id])
   }
 
+  // 清除所有 Todo
+  const clearCompletedTodo = () => {
+    setTodos([...todos].filter(item => !item.completed))
+  }
+
+  const editTodo = (id) => {
+
+  }
+
+  const saveTodosInStorage = () => {
+    localStorage.setItem('todos', JSON.stringify(todos))
+  }
+
+  const getTodosInStorage = () => {
+    if (localStorage.getItem('todos') === null) {
+      localStorage.setItem('todos', JSON.stringify([]))
+    } else {
+      let tempLocal = JSON.parse(localStorage.getItem('todos'))
+      setTodos(tempLocal)
+    }
+  }
+
+
+  useEffect(() => {
+    const initTodo = () => {
+      switch (tab) {
+        case 'completed':
+          setFilteredTodos(todos.filter(todo => todo.completed))
+          break
+        case 'uncompleted':
+          setFilteredTodos(todos.filter(todo => !todo.completed))
+          break
+        default:
+          setFilteredTodos(todos)
+          break
+      }
+    }
+
+    initTodo()
+
+  }, [todos, tab])
+
+  useEffect(() => {
+    getTodosInStorage()
+  }, [])
 
   return (
     <div className='App'>
       <main>
-        <div class='bg-half'></div>
+        <div className='bg-half'></div>
 
-        <div class='container mx-auto px-4 h-100'>
-          <header class='header'>
+        <div className='container mx-auto px-4 h-100'>
+          <header className='header'>
             <span>TODO LIST</span>
           </header>
 
-          <div class='todolist__form'>
+          <div className='todolist__form'>
             <input
               id='todo'
               type='text'
@@ -56,75 +106,88 @@ function App() {
               placeholder='新增待辦事項'
             />
 
-            <div class="add-todo-btn" onClick={() => addTodo(input)}>
+            <div className="add-todo-btn" onClick={() => addTodo(input)}>
               <BiMessageSquareAdd />
             </div>
           </div>
 
 
-          <div class='todolist'>
-            <ul class='todolist__tabs'>
+          <div className='todolist'>
+            <ul className='todolist__tabs'>
 
               <li>
-                <span onClick={() => test}
-                  class='all active'
+                <span onClick={() => setTab('all')}
+                  className='all active'
                   href='#'>
                   全部
                 </span>
               </li>
               <li>
                 <span
-                  class='no-completed' href='#'>
+                  onClick={() => setTab('uncompleted')}
+                  className='no-completed' href='#'>
                   待完成
                 </span>
               </li>
               <li>
                 <span
-                  class='completed' href='#'>
+                  onClick={() => setTab('completed')}
+                  className='completed' href='#'>
                   已完成
                 </span>
               </li>
             </ul>
 
-            <div class='todolist__table'>
+            <div className='todolist__table'>
 
-              {todos && todos?.length === 0 && (
+              {filteredTodos && filteredTodos?.length === 0 && (
                 <div>無待辦事項</div>
               )}
 
-              <ul class='todolist__item'>
-                {todos && todos?.map((todo, i) => {
+              <ul className='todolist__item'>
+                {filteredTodos && filteredTodos?.map((todo, i) => {
                   return (
                     <li
                       key={i}
-                      class={todo?.status ? 'completed' : 'no-completed'}
+                      className={todo?.status ? 'completed' : 'no-completed'}
                     >
 
                       <input
-                        class='todolist__input'
+                        className='todolist__input'
                         type='checkbox'
                         id={`todo-${i}`}
                         onChange={() => makeCompletedTodo(i)}
                       />
                       <label htmlFor={`todo-${i}`}>{todo?.title}</label>
 
-                      <button
-                        onClick={() => deleteTodo(i)}
-                        class='delete'
-                      >
-                        <MdDeleteOutline />
-                      </button>
+                      <div className='todolist__btn'>
+                        <button
+                          onClick={() => editTodo(i)}
+                          className='delete'
+                        >
+                          <MdEdit />
+                        </button>
+
+                        <button
+                          onClick={() => deleteTodo(i)}
+                          className='delete'
+                        >
+                          <MdDeleteOutline />
+                        </button>
+                      </div>
                     </li>
                   )
                 })}
               </ul>
 
-              <div class='todolist__info'>
+              <div className='todolist__info'>
                 <span>
-                  <a>{completedTodo}</a>
+                  <span>{completedTodo}</span>
                   個已完成項目
                 </span>
-                <span class='cursor-pointer' onClick='clearCompletedTodo()'>清除已完成項目</span>
+                <span className='cursor-pointer' onClick={clearCompletedTodo}>
+                  清除已完成項目
+                </span>
               </div>
             </div>
           </div>
