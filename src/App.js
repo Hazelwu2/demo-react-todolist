@@ -22,7 +22,7 @@ function App() {
       title: text,
       completed: false
     }])
-    saveTodosInStorage()
+
     setInput('')
     alert('新增成功')
   }
@@ -61,25 +61,24 @@ function App() {
     }
   }
 
+  const initTodo = () => {
+    switch (tab) {
+      case 'completed':
+        setFilteredTodos(todos.filter(todo => todo.completed))
+        break
+      case 'uncompleted':
+        setFilteredTodos(todos.filter(todo => !todo.completed))
+        break
+      default:
+        setFilteredTodos(todos)
+        break
+    }
+  }
 
   useEffect(() => {
-    const initTodo = () => {
-      switch (tab) {
-        case 'completed':
-          setFilteredTodos(todos.filter(todo => todo.completed))
-          break
-        case 'uncompleted':
-          setFilteredTodos(todos.filter(todo => !todo.completed))
-          break
-        default:
-          setFilteredTodos(todos)
-          break
-      }
-    }
-
     initTodo()
-
   }, [todos, tab])
+
 
   useEffect(() => {
     getTodosInStorage()
