@@ -1,15 +1,14 @@
 import './App.css';
 import axios from 'axios'
-import { useState, useMemo, useEffect } from 'react'
-import { BiMessageSquareAdd } from 'react-icons/bi';
-import { MdDeleteOutline, MdEdit } from 'react-icons/md';
+import { useState, useEffect } from 'react'
+
 // Component
 import TodoForm from './components/TodoForm'
 import TodoFilter from './components/TodoFilter'
+import Todos from './components/Todos'
 
 
 function App() {
-  const [input, setInput] = useState('')
   const [tab, setTab] = useState('all')
   const [todos, setTodos] = useState([
     { title: '爆肝趕 KryptoCamp 作業', completed: false },
@@ -19,18 +18,19 @@ function App() {
   const [completedTodo, setCompletedTodo] = useState(0)
   const [filteredTodos, setFilteredTodos] = useState(0)
 
+  // 新增待辦事項
   const addTodo = (text) => {
     setTodos([...todos, {
       title: text,
       completed: false
     }])
 
-    setInput('')
     alert('新增成功')
   }
 
+  // 刪除待辦事項
   const deleteTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id))
+    // setTodos(todos.filter(todo => todo.id !== id))
   }
 
 
@@ -85,18 +85,15 @@ function App() {
     console.log(todos.filter(todo => todo.completed === false))
   }
 
-  useEffect(() => {
-    initTodo()
-  }, [todos, tab])
+  // useEffect(() => {
+  //   initTodo()
+  // }, [todos, tab])
 
 
   useEffect(() => {
     getTodosInStorage()
   }, [])
 
-  useEffect(() => {
-    todos.forEach(item => console.log(item))
-  }, [todos])
 
   return (
     <div className='App'>
@@ -115,58 +112,14 @@ function App() {
 
             <TodoFilter setTab={setTab} />
 
-            <div className='todolist__table'>
-
-              {filteredTodos && filteredTodos?.length === 0 && (
-                <div>無待辦事項</div>
-              )}
-
-              <ul className='todolist__item'>
-                {filteredTodos && filteredTodos?.map((todo, i) => {
-                  return (
-                    <li
-                      key={i}
-                    // className={todo?.completed ? 'completed' : 'no-completed'}
-                    >
-
-                      <input
-                        className='todolist__input'
-                        type='checkbox'
-                        id={`todo-${i}`}
-                        onChange={() => makeCompletedTodo(i)}
-                      />
-                      <label htmlFor={`todo-${i}`}>{todo?.title}</label>
-
-                      <div className='todolist__btn'>
-                        <button
-                          onClick={() => editTodo(i)}
-                          className='delete'
-                        >
-                          <MdEdit />
-                        </button>
-
-                        <button
-                          onClick={() => deleteTodo(i)}
-                          className='delete'
-                        >
-                          <MdDeleteOutline />
-                        </button>
-                      </div>
-                    </li>
-                  )
-                })}
-              </ul>
-
-              <div className='todolist__info'>
-                <span>
-                  <span>{completedTodo}</span>
-                  個已完成項目
-                </span>
-                <span className='cursor-pointer' onClick={clearCompletedTodo}>
-                  清除已完成項目
-                </span>
-              </div>
-            </div>
+            <Todos
+              todos={todos}
+              makeCompletedTodo={makeCompletedTodo}
+              clearCompletedTodo={clearCompletedTodo}
+              editTodo={editTodo}
+              completedTodo={completedTodo}
+              deleteTodo={deleteTodo}
+            />
           </div>
 
         </div>
