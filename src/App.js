@@ -5,22 +5,22 @@ import { BiMessageSquareAdd } from 'react-icons/bi';
 import { MdDeleteOutline, MdEdit } from 'react-icons/md';
 // Component
 import TodoForm from './components/TodoForm'
+import TodoFilter from './components/TodoFilter'
 
 
 function App() {
   const [input, setInput] = useState('')
   const [tab, setTab] = useState('all')
   const [todos, setTodos] = useState([
-    { id: 0, title: '爆肝趕 KryptoCamp 作業', completed: false },
-    { id: 1, title: '觀看 KryptoCamp 線上課程', completed: false },
-    { id: 2, title: '學習 Solidity 合約', completed: false },
+    { title: '爆肝趕 KryptoCamp 作業', completed: false },
+    { title: '觀看 KryptoCamp 線上課程', completed: false },
+    { title: '學習 Solidity 合約', completed: false },
   ])
   const [completedTodo, setCompletedTodo] = useState(0)
   const [filteredTodos, setFilteredTodos] = useState(0)
 
   const addTodo = (text) => {
     setTodos([...todos, {
-      id: 0,
       title: text,
       completed: false
     }])
@@ -39,6 +39,8 @@ function App() {
     const newTodos = [...todos];
     newTodos[id].completed = !newTodos[id].completed
     setTodos(newTodos)
+
+    setCompletedTodo([...todos].filter(item => item.completed).length)
   }
 
   // 清除所有 Todo
@@ -110,30 +112,8 @@ function App() {
 
 
           <div className='todolist'>
-            <ul className='todolist__tabs'>
 
-              <li>
-                <span onClick={() => setTab('all')}
-                  className='all active'
-                  href='#'>
-                  全部
-                </span>
-              </li>
-              <li>
-                <span
-                  onClick={() => setTab('uncompleted')}
-                  className='no-completed' href='#'>
-                  待完成
-                </span>
-              </li>
-              <li>
-                <span
-                  onClick={() => setTab('completed')}
-                  className='completed' href='#'>
-                  已完成
-                </span>
-              </li>
-            </ul>
+            <TodoFilter setTab={setTab} />
 
             <div className='todolist__table'>
 
@@ -152,10 +132,10 @@ function App() {
                       <input
                         className='todolist__input'
                         type='checkbox'
-                        id={`todo-${i}-${tab}`}
+                        id={`todo-${i}`}
                         onChange={() => makeCompletedTodo(i)}
                       />
-                      <label htmlFor={`todo-${i}-${tab}`}>{todo?.title}</label>
+                      <label htmlFor={`todo-${i}`}>{todo?.title}</label>
 
                       <div className='todolist__btn'>
                         <button
