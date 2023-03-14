@@ -3,6 +3,8 @@ import axios from 'axios'
 import { useState, useMemo, useEffect } from 'react'
 import { BiMessageSquareAdd } from 'react-icons/bi';
 import { MdDeleteOutline, MdEdit } from 'react-icons/md';
+// Component
+import TodoForm from './components/TodoForm'
 
 
 function App() {
@@ -44,8 +46,10 @@ function App() {
     setTodos([...todos].filter(item => !item.completed))
   }
 
-  const editTodo = (id) => {
-
+  const editTodo = (id, title) => {
+    const newTodos = [...todos]
+    newTodos[id].title = title
+    setTodos(newTodos)
   }
 
   const saveTodosInStorage = () => {
@@ -64,15 +68,19 @@ function App() {
   const initTodo = () => {
     switch (tab) {
       case 'completed':
+        console.log('全部')
         setFilteredTodos(todos.filter(todo => todo.completed))
         break
       case 'uncompleted':
-        setFilteredTodos(todos.filter(todo => !todo.completed))
+        console.log('待完成')
+        setFilteredTodos(todos.filter(todo => todo.completed === false))
         break
       default:
         setFilteredTodos(todos)
         break
     }
+
+    console.log(todos.filter(todo => todo.completed === false))
   }
 
   useEffect(() => {
@@ -84,6 +92,10 @@ function App() {
     getTodosInStorage()
   }, [])
 
+  useEffect(() => {
+    todos.forEach(item => console.log(item))
+  }, [todos])
+
   return (
     <div className='App'>
       <main>
@@ -94,21 +106,7 @@ function App() {
             <span>TODO LIST</span>
           </header>
 
-          <div className='todolist__form'>
-            <input
-              id='todo'
-              type='text'
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value)
-              }}
-              placeholder='新增待辦事項'
-            />
-
-            <div className="add-todo-btn" onClick={() => addTodo(input)}>
-              <BiMessageSquareAdd />
-            </div>
-          </div>
+          <TodoForm addTodo={addTodo} />
 
 
           <div className='todolist'>
@@ -148,16 +146,16 @@ function App() {
                   return (
                     <li
                       key={i}
-                      className={todo?.status ? 'completed' : 'no-completed'}
+                    // className={todo?.completed ? 'completed' : 'no-completed'}
                     >
 
                       <input
                         className='todolist__input'
                         type='checkbox'
-                        id={`todo-${i}`}
+                        id={`todo-${i}-${tab}`}
                         onChange={() => makeCompletedTodo(i)}
                       />
-                      <label htmlFor={`todo-${i}`}>{todo?.title}</label>
+                      <label htmlFor={`todo-${i}-${tab}`}>{todo?.title}</label>
 
                       <div className='todolist__btn'>
                         <button
