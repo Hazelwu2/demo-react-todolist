@@ -4,7 +4,6 @@ import { BiMessageSquareAdd } from 'react-icons/bi';
 
 const Form = ({ inputText, todos, setTodos, setInputText, setTab, }) => {
   const inputTextHandler = (e) => {
-    console.log(e.target.value)
     // props.setInputText(e.target.value)
     setInputText(e.target.value)
   }
